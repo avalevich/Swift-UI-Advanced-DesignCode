@@ -227,9 +227,9 @@ struct SignUpView: View {
                 Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .cancel())
             }
         }
-//                .fullScreenCover(isPresented: $showProfileView) {
-//                    ProfileView()
-//                }
+        .fullScreenCover(isPresented: $showProfileView) {
+            ProfileView()
+        }
     }
     
     func signUp() {
