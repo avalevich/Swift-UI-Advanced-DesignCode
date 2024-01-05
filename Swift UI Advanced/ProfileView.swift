@@ -6,8 +6,20 @@
 //
 
 import SwiftUI
+import RevenueCat
+import FirebaseAuth
 
 struct ProfileView: View {
+    @State private var showLoader = false
+    @State private var iapButtonTitle = "Purchase Lifetime Pro Plan"
+    @Environment(\.dismiss) var dismiss
+    @State
+    private var showAlertView: Bool = false
+    @State
+    private var alertTitle: String = ""
+    @State
+    private var alertMessage: String = ""
+    
     var body: some View {
         ZStack {
             Image("background-2")
@@ -17,15 +29,16 @@ struct ProfileView: View {
             VStack {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack(spacing: 16) {
-                        ZStack {
-                            Circle()
-                                .foregroundColor(Color("pink-gradient-1"))
-                                .frame(width: 66, height: 66, alignment: .center)
-                            Image(systemName: "person.fill")
-                                .foregroundColor(.white)
-                                .font(.system(size: 24, weight: .medium, design: .rounded))
-                        }
-                        .frame(width: 66, height: 66, alignment: .center)
+//                        ZStack {
+//                            Circle()
+//                                .foregroundColor(Color("pink-gradient-1"))
+//                                .frame(width: 66, height: 66, alignment: .center)
+//                            Image(systemName: "person.fill")
+//                                .foregroundColor(.white)
+//                                .font(.system(size: 24, weight: .medium, design: .rounded))
+//                        }
+                        GradientProfilePictureView(profilePicture: UIImage(named: "Profile")!)
+                            .frame(width: 66, height: 66)
                         VStack(alignment: .leading) {
                             Text("Alyaxey Valevich")
                                 .foregroundColor(.white)
@@ -68,13 +81,59 @@ struct ProfileView: View {
                     }
                 }
                 .padding(16)
-                GradientButton(buttonTitle: "Purchase Lifetime Pro Plan") {
-                    print("IAP")
+                GradientButton(buttonTitle: iapButtonTitle) {
+                    showLoader = true
+                    Purchases.shared.getOfferings { offerings, error in
+                        if let packages = offerings?.current?.availablePackages {
+                            Purchases.shared.purchase(package: packages.first!) { transaction, purchaserInfo, error, userCancelled in
+                                print("Transaction: \(transaction)")
+                                print("Purcahser info: \(purchaserInfo)")
+                                print("Error: \(error)")
+                                print("User cancelled: \(userCancelled)")
+                                if purchaserInfo?.entitlements["pro"]?.isActive == true {
+                                    iapButtonTitle = "You are a Pro member"
+                                    alertTitle = "Purchase Success"
+                                    alertMessage = "You are now a Pro member"
+                                    showAlertView.toggle()
+                                } else {
+                                    iapButtonTitle = "Purchase Failed"
+                                    alertTitle = "Purchase Failed"
+                                    alertMessage = "You are not a Pro member"
+                                    showAlertView.toggle()
+                                }
+                                showLoader = false
+                            }
+                        } else {
+                            showLoader = false
+                        }
+                    }
                 }
                 .padding(.horizontal, 16)
                 
                 Button {
-                    print("Restore")
+                    showLoader = true
+                    Purchases.shared.restorePurchases { purchaserInfo, error in
+                        if let info = purchaserInfo {
+                            if info.allPurchasedProductIdentifiers.contains("lifetime_pro_plan") {
+                                iapButtonTitle = "You are a Pro member"
+                                alertTitle = "Restore Success"
+                                alertMessage = "Your purchase has been restored and you are a Pro member"
+                                showAlertView.toggle()
+                            } else {
+                                iapButtonTitle = "No Purchases Found"
+                                alertTitle = "No Purchases Found"
+                                alertMessage = "Your purchase has not been restored and you are not a Pro member"
+                                showAlertView.toggle()
+                            }
+                            showLoader = false
+                        } else {
+                            showLoader = false
+                            iapButtonTitle = "Restore Failed"
+                            alertTitle = "Restore Failed"
+                            alertMessage = "Your purchase has not been restored and you are not a Pro member"
+                            showAlertView.toggle()
+                        }
+                    }
                 } label: {
                     GradientText(text: "Restore Purchases")
                         .font(.footnote.bold())
@@ -94,7 +153,7 @@ struct ProfileView: View {
             VStack {
                 Spacer()
                 Button {
-                    
+                    signOut()
                 } label: {
                     Image(systemName: "arrow.turn.up.forward.iphone.fill")
                         .foregroundStyle(.white)
@@ -113,8 +172,27 @@ struct ProfileView: View {
                 }
             }
             .padding(.bottom, 64)
+            
+            if showLoader {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+            }
         }
         .preferredColorScheme(.dark)
+        .alert(isPresented: $showAlertView) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .cancel())
+        }
+    }
+    
+    private func signOut() {
+        do {
+            try Auth.auth().signOut()
+            dismiss.callAsFunction()
+        } catch let error {
+            alertTitle = "Uh-oh!"
+            alertMessage = error.localizedDescription
+            showAlertView.toggle()
+        }
     }
 }
 
