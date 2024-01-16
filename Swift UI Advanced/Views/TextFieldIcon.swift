@@ -13,6 +13,9 @@ struct TextFieldIcon: View {
     @Binding
     var currentlyEditing: Bool
     
+    @Binding
+    var passedImage: UIImage?
+    
     @State
     private var colorAngle = 0.0
     
@@ -49,9 +52,17 @@ struct TextFieldIcon: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color.white, lineWidth: 1)
                     .blendMode(.overlay)
-                Image(systemName: iconName)
-                    .gradientForeground(colors: [Color("pink-gradient-1"), Color("pink-gradient-2")])
-                    .font(.system(size: 17, weight: .medium))
+                if let passedImage = passedImage {
+                    Image(uiImage: passedImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 28, height: 28, alignment: .center)
+                        .cornerRadius(8)
+                } else {
+                    Image(systemName: iconName)
+                        .gradientForeground(colors: [Color("pink-gradient-1"), Color("pink-gradient-2")])
+                        .font(.system(size: 17, weight: .medium))
+                }
             }
         }
         .frame(width: 36, height: 36, alignment: .center)
@@ -60,5 +71,5 @@ struct TextFieldIcon: View {
 }
 
 #Preview {
-    TextFieldIcon(iconName: "key.fill", currentlyEditing: .constant(false))
+    TextFieldIcon(iconName: "key.fill", currentlyEditing: .constant(false), passedImage: .constant(nil))
 }

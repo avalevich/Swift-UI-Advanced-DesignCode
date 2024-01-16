@@ -41,7 +41,88 @@ struct SignUpView: View {
     @FocusState
     private var isPasswordFieldInFocus: Bool
     
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Account.userSince, ascending: true)],  animation: .default) private var savedAccounts: FetchedResults<Account>
+    
     private let generator = UISelectionFeedbackGenerator()
+    
+    private var emailView: some View {
+        HStack(spacing: 12) {
+            TextFieldIcon(iconName: "envelope.open.fill", currentlyEditing: $editingEmailTextField, passedImage: .constant(nil))
+                .scaleEffect(emailIconBounce ? 1.2 : 1.0)
+            TextField("Email", text: $email) {  isEditing in
+                editingEmailTextField = isEditing
+                editingPasswordTextField = false
+                generator.selectionChanged()
+                if isEditing {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
+                        emailIconBounce.toggle()
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
+                            emailIconBounce.toggle()
+                        }
+                    }
+                }
+            }
+            .preferredColorScheme(.dark)
+            .foregroundStyle(.white.opacity(0.7))
+            .textInputAutocapitalization(.never)
+            .textContentType(.emailAddress)
+        }
+        .frame(height: 52)
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white, lineWidth: 1)
+                .blendMode(.overlay)
+        }
+        .background {
+            Color("secondaryBackground")
+                .cornerRadius(16)
+                .opacity(0.8)
+        }
+    }
+    
+    private var passwordView: some View {
+        HStack(spacing: 12) {
+            TextFieldIcon(iconName: "key.fill", currentlyEditing: $editingPasswordTextField, passedImage: .constant(nil))
+                .scaleEffect(passwordIconBounce ? 1.2 : 1.0)
+            SecureField("Password", text: $password)
+                .preferredColorScheme(.dark)
+                .foregroundStyle(.white.opacity(0.7))
+                .textInputAutocapitalization(.never)
+                .textContentType(.password)
+                .focused($isPasswordFieldInFocus)
+                .onChange(of: isPasswordFieldInFocus) { _, isFocused in
+                    editingPasswordTextField = isFocused
+                    if isFocused {
+                        editingEmailTextField = false
+                    }
+                    generator.selectionChanged()
+                    if isFocused {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
+                            passwordIconBounce.toggle()
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
+                                passwordIconBounce.toggle()
+                            }
+                        }
+                    }
+                }
+        }
+        .frame(height: 52)
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white, lineWidth: 1)
+                .blendMode(.overlay)
+        }
+        .background {
+            Color("secondaryBackground")
+                .cornerRadius(16)
+                .opacity(0.8)
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -61,86 +142,39 @@ struct SignUpView: View {
                     Text("Access to 120+ hours of courses, tutorials, and livestreams")
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.7))
-                    HStack(spacing: 12) {
-                        TextFieldIcon(iconName: "envelope.open.fill", currentlyEditing: $editingEmailTextField)
-                            .scaleEffect(emailIconBounce ? 1.2 : 1.0)
-                        TextField("Email", text: $email) {  isEditing in
-                            editingEmailTextField = isEditing
-                            editingPasswordTextField = false
-                            generator.selectionChanged()
-                            if isEditing {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
-                                    emailIconBounce.toggle()
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
-                                        emailIconBounce.toggle()
-                                    }
-                                }
-                            }
-                        }
-                        .preferredColorScheme(.dark)
-                        .foregroundStyle(.white.opacity(0.7))
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.emailAddress)
-                    }
-                    .frame(height: 52)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white, lineWidth: 1)
-                            .blendMode(.overlay)
-                    }
-                    .background {
-                        Color("secondaryBackground")
-                            .cornerRadius(16)
-                            .opacity(0.8)
-                    }
-                    
-                    HStack(spacing: 12) {
-                        TextFieldIcon(iconName: "key.fill", currentlyEditing: $editingPasswordTextField)
-                            .scaleEffect(passwordIconBounce ? 1.2 : 1.0)
-                        SecureField("Password", text: $password)
-                            .preferredColorScheme(.dark)
-                            .foregroundStyle(.white.opacity(0.7))
-                            .textInputAutocapitalization(.never)
-                            .textContentType(.password)
-                            .focused($isPasswordFieldInFocus)
-                            .onChange(of: isPasswordFieldInFocus) { _, isFocused in
-                                editingPasswordTextField = isFocused
-                                if isFocused {
-                                    editingEmailTextField = false
-                                }
-                                generator.selectionChanged()
-                                if isFocused {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
-                                        passwordIconBounce.toggle()
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.4, blendDuration: 0.5)) {
-                                            passwordIconBounce.toggle()
-                                        }
-                                    }
-                                }
-                            }
-                    }
-                    .frame(height: 52)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white, lineWidth: 1)
-                            .blendMode(.overlay)
-                    }
-                    .background {
-                        Color("secondaryBackground")
-                            .cornerRadius(16)
-                            .opacity(0.8)
-                    }
+                    emailView
+                    passwordView
                     GradientButton(buttonTitle: showSignUp ? "Create account": "Sign In") {
                         generator.selectionChanged()
                         signUp()
                     }.onAppear {
                         Auth.auth().addStateDidChangeListener { auth, user in
-                            if user != nil {
-                                showProfileView.toggle()
+                            if let currentUser = user {
+                                if savedAccounts.count == 0 {
+                                    // Add data to CoreData
+                                    let userDataToSave = Account(context: viewContext)
+                                    userDataToSave.name = currentUser.displayName
+                                    userDataToSave.bio = nil
+                                    userDataToSave.userID = currentUser.uid
+                                    userDataToSave.numberOfCertificates = 0
+                                    userDataToSave.proMember = false
+                                    userDataToSave.twitterHandle = nil
+                                    userDataToSave.website = nil
+                                    userDataToSave.profileImage = nil
+                                    userDataToSave.userSince = Date()
+                                    do {
+                                        try viewContext.save()
+                                        DispatchQueue.main.async {
+                                            showProfileView.toggle()
+                                        }
+                                    } catch let error {
+                                        alertTitle = "Could not create an account"
+                                        alertMessage = error.localizedDescription
+                                        showAlertView.toggle()
+                                    }
+                                } else {
+                                    showProfileView.toggle()
+                                }
                             }
                         }
                     }
@@ -229,6 +263,7 @@ struct SignUpView: View {
         }
         .fullScreenCover(isPresented: $showProfileView) {
             ProfileView()
+                .environment(\.managedObjectContext, self.viewContext)
         }
     }
     
@@ -270,5 +305,5 @@ struct SignUpView: View {
 }
 
 #Preview {
-    SignUpView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    SignUpView().environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }
