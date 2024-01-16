@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		440EC31C2B45B5A500EB5EFD /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 440EC31B2B45B5A500EB5EFD /* StoreKit.framework */; };
 		4453D7272B013D4300EF05B1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4453D7262B013D4300EF05B1 /* ProfileView.swift */; };
+		445540612B56DAB000F98B19 /* EmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445540602B56DAB000F98B19 /* EmailView.swift */; };
+		445540632B56DAF500F98B19 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445540622B56DAF500F98B19 /* PasswordView.swift */; };
 		44572D8B2B3EC5DD00E212F4 /* SignInWithAppleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44572D8A2B3EC5DD00E212F4 /* SignInWithAppleButton.swift */; };
 		44572D8D2B3EC6AA00E212F4 /* SignInWithAppleObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44572D8C2B3EC6AA00E212F4 /* SignInWithAppleObject.swift */; };
 		4481B7AA2AF5147400ABD0A8 /* GradientText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4481B7A92AF5147400ABD0A8 /* GradientText.swift */; };
@@ -35,6 +37,8 @@
 /* Begin PBXFileReference section */
 		440EC31B2B45B5A500EB5EFD /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4453D7262B013D4300EF05B1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		445540602B56DAB000F98B19 /* EmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailView.swift; sourceTree = "<group>"; };
+		445540622B56DAF500F98B19 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
 		44572D8A2B3EC5DD00E212F4 /* SignInWithAppleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithAppleButton.swift; sourceTree = "<group>"; };
 		44572D8C2B3EC6AA00E212F4 /* SignInWithAppleObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithAppleObject.swift; sourceTree = "<group>"; };
 		4481B7A92AF5147400ABD0A8 /* GradientText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientText.swift; sourceTree = "<group>"; };
@@ -78,6 +82,8 @@
 			children = (
 				4481B7A92AF5147400ABD0A8 /* GradientText.swift */,
 				44E5704B2B484D9F007650B4 /* GradientTextField.swift */,
+				445540602B56DAB000F98B19 /* EmailView.swift */,
+				445540622B56DAF500F98B19 /* PasswordView.swift */,
 				44E570472B483596007650B4 /* GradientProfilePictureView.swift */,
 				44572D8A2B3EC5DD00E212F4 /* SignInWithAppleButton.swift */,
 				4481B7AB2AF514AD00ABD0A8 /* GradientButton.swift */,
@@ -231,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4492D78F2AF503DC005EF364 /* VisualEffectBlur.swift in Sources */,
+				445540632B56DAF500F98B19 /* PasswordView.swift in Sources */,
 				4481B7AC2AF514AD00ABD0A8 /* GradientButton.swift in Sources */,
 				4453D7272B013D4300EF05B1 /* ProfileView.swift in Sources */,
 				44572D8D2B3EC6AA00E212F4 /* SignInWithAppleObject.swift in Sources */,
@@ -243,6 +250,7 @@
 				4481B7AE2AF514C800ABD0A8 /* TextFieldIcon.swift in Sources */,
 				4492D7902AF503DC005EF364 /* ImagePicker.swift in Sources */,
 				44572D8B2B3EC5DD00E212F4 /* SignInWithAppleButton.swift in Sources */,
+				445540612B56DAB000F98B19 /* EmailView.swift in Sources */,
 				4492D77A2AF5038A005EF364 /* SignUpView.swift in Sources */,
 				4492D7782AF5038A005EF364 /* Swift_UI_AdvancedApp.swift in Sources */,
 			);

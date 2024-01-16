@@ -12,6 +12,12 @@ import RevenueCat
 @main
 struct Swift_UI_AdvancedApp: App {
     let persistenceController = PersistenceController.shared
+    @State var email: String = ""
+    @State var password: String = ""
+    @State private var showSignUp: Bool = true
+    @State private var showAlertView: Bool = false
+    @State var alertTitle: String = ""
+    @State var alertMessage: String = ""
     
     init() {
         FirebaseApp.configure()
@@ -21,7 +27,7 @@ struct Swift_UI_AdvancedApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SignUpView()
+            SignUpView(showSignUp: $showSignUp, email: $email, password: $password, showAlertView: $showAlertView, alertTitle: $alertTitle, alertMessage: $alertMessage)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
